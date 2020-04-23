@@ -14,7 +14,7 @@ run_unit_tests:
     - XCODE_TEST_RESULTS=xcodeTestResults.xcresult
     - rm -rf $XCODE_TEST_RESULTS
     - xcodebuild -project ./StringTagProcessor.xcodeproj -scheme StringTagProcessor-Package test  -resultBundlePath $XCODE_TEST_RESULTS -quiet
-    - .build/debug/xchtmlreport -r $XCODE_TEST_RESULTS -j
+    - .build/debug/xchtmlreport  -i -r $XCODE_TEST_RESULTS -j
     - mv ${XCODE_TEST_RESULTS}/report.junit report.junit
     - find ${CI_PROJECT_DIR} -name index.html
     - find ${CI_PROJECT_DIR} -name report.junit
