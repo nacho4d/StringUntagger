@@ -9,11 +9,12 @@ run_unit_tests:
   script:
     # Build tests via spm so xchtmlreport is fetched, built and it is usable in later steps
     - swift build --build-tests
-    # Test using xcode to generate xcresult file so it is convertible to junit and html report
-    - swift package generate-xcodeproj
+    # Remove possible garbage
     - XCODE_TEST_RESULTS=xcodeTestResults.xcresult
     - rm -rf $XCODE_TEST_RESULTS
-    - xcodebuild -project ./StringTagProcessor.xcodeproj -scheme StringTagProcessor-Package test  -resultBundlePath $XCODE_TEST_RESULTS -quiet
+    # Test using xcode to generate xcresult file so it is convertible to junit and html report, also becase code coverage is easier to get
+    - swift package generate-xcodeproj
+    - xcodebuild -project ./StringTagProcessor.xcodeproj -scheme StringTagProcessor-Package test  -resultBundlePath $XCODE_TEST_RESULTS  -enableCodeCoverage YES -quiet
     - .build/debug/xchtmlreport  -i -r $XCODE_TEST_RESULTS -j
     - mv ${XCODE_TEST_RESULTS}/report.junit report.junit
     - find ${CI_PROJECT_DIR} -name index.html
