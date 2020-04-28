@@ -13,16 +13,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Mirror To Gitlab
-      uses: SvanBoxel/gitlab-mirror-and-ci-action@master
-      with:
-        args: "https://gitlab.com/nacho4d/stringuntagger"
-      env:
-        GITLAB_HOSTNAME: "gitlab.com"
-        GITLAB_USERNAME: "stringuntagger"
-        GITLAB_PASSWORD: ${{ secrets.GITLAB_PASSWORD }}
-        GITLAB_PROJECT_ID: "18314645"
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Build
       run: swift build --build-tests
     - name: Run tests
