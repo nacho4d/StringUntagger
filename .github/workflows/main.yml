@@ -22,7 +22,7 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v1
     # Runs a single command using the runners shell
-    - name: Mirror to Gitlan
+    - name: Mirror to Gitlab
       uses: SvanBoxel/gitlab-mirror-and-ci-action@master
       with:
         args: "https://gitlab.com/nacho4d/stringuntagger"
