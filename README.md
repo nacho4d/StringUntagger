@@ -2,19 +2,22 @@
 
 <a href="https://github.com/nacho4d/StringUntagger/actions"><img src="https://github.com/nacho4d/StringUntagger/workflows/Swift/badge.svg" alt="Swift"/></a>
 
-
 A simple class to convert tagged strings to attributed strings. This is specially useful when strings are attributed and localized.
 
 Simplest example:
 
 ```swift
-let res = "click <i>here</i> please".attributted(attributter: [
-    "root": [ .foregroundColor: UIColor.gray, .font: UIFont.systemFont(ofSize: 17)],
-    "i": [ .font: UIFont.boldSystemFont(ofSize: 17) ]
+let res = "click <b>here</b> please".attributedString(attributter: [
+    "root": [ .foregroundColor: UIColor.blue, .font: UIFont.systemFont(ofSize: 17)],
+    "b": [ .font: UIFont.boldSystemFont(ofSize: 17), .underlineStyle: NSUnderlineStyle.double.rawValue ]
 ])
 ```
     
-Root tag name can be customized too
+Will result in: 
+
+<img src="res/simplest_example.png" height="22"> 
+    
+If "root" is not good for your cases, it can be customized too:
 
 ```swift
 let su = StringUntagger(rootName: "MyCustomRootName")
