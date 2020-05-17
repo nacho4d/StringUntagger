@@ -17,7 +17,7 @@ final class StringUntaggerTests: XCTestCase {
     
     // MARK: - String Extension
     
-    func testSimplest() {
+    func testStringSimplest() {
         let res = "click <i>here</i> please".attributted(attributter: [
             "root": [ .foregroundColor: Color.gray, .font: font17],
             "i": [ .font: font17b]
@@ -243,12 +243,16 @@ final class StringUntaggerTests: XCTestCase {
     }
 
     static var allTests = [
+        ("testStringSimplest", testStringSimplest),
         ("testSimplest", testSimplest),
         ("testSimple", testSimple),
+        ("testCustomRootName", testCustomRootName),
+        ("testSimplest_withBlock", testSimplest_withBlock),
+        ("testSimple_withBlock", testSimple_withBlock),
         ("testSimpleWithVariousConsecutiveTags", testSimpleWithVariousConsecutiveTags),
         ("testOneInsideOfOther", testOneInsideOfOther),
         ("testMalformed", testMalformed),
-        ("testCustomRootName", testCustomRootName),
+        ("testCustomRootName_withBlock" testCustomRootName_withBlock),
         ("testResetAttributes", testResetAttributes),
     ]
 }
