@@ -1,12 +1,12 @@
 import Foundation
 
-extension String {
+public extension String {
     func attributedString(attributter: [String: [NSAttributedString.Key: Any]]) -> NSAttributedString {
         return StringUntagger().attributedString(from: self, attributer: attributter)
     }
 }
 
-class StringUntagger: NSObject {
+public class StringUntagger: NSObject {
     
     class Element: CustomStringConvertible  {
         var name: String
@@ -23,7 +23,7 @@ class StringUntagger: NSObject {
         }
     }
     
-    init(rootName: String = "root") {
+    public init(rootName: String = "root") {
         self.rootName = rootName
     }
 
@@ -36,7 +36,7 @@ class StringUntagger: NSObject {
     
     private var result: NSMutableAttributedString?
     
-    func findAttributes(newElement: Element) -> [NSAttributedString.Key: Any] {
+    private func findAttributes(newElement: Element) -> [NSAttributedString.Key: Any] {
         if let attributter = attributterDictionary {
             // Get attributes from dictionary
             return attributter[newElement.name] ?? [:]
@@ -78,11 +78,11 @@ class StringUntagger: NSObject {
     }
         
     /// `attributer` block is executed various times depending on how many tags there is in the string. It is executed synchronously.
-    func attributedString(from string: String, attributer: [String: [NSAttributedString.Key: Any]]) -> NSAttributedString {
+    public func attributedString(from string: String, attributer: [String: [NSAttributedString.Key: Any]]) -> NSAttributedString {
         return attributedString(from: string, attributerDictionary: attributer, attributerBlock: nil)
     }
         
-    func attributedString(from string: String, attributer: ((String, [String]) -> [NSAttributedString.Key: Any])?) -> NSAttributedString {
+    public func attributedString(from string: String, attributer: ((String, [String]) -> [NSAttributedString.Key: Any])?) -> NSAttributedString {
         return attributedString(from: string, attributerDictionary: nil, attributerBlock: attributer)
     }
 }
