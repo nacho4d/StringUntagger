@@ -5,13 +5,13 @@ import UIKit
 import AppKit
 #endif
 
-@testable import StringTagProcessor
+@testable import StringUntagger
 
 let font17 = Font.systemFont(ofSize: 17)
 let font17b = Font.boldSystemFont(ofSize: 17)
 let font12 = Font.systemFont(ofSize: 12)
 
-final class StringTagProcessorTests: XCTestCase {
+final class StringUntaggerTests: XCTestCase {
     
     
     func testSimplest() {
@@ -19,7 +19,7 @@ final class StringTagProcessorTests: XCTestCase {
     
         /// Simplest case
         /// Just tag the parts you want to customize. All other parts will be enclosed in a implicit tag called "root".
-        let tsp = StringTagProcessor()
+        let tsp = StringUntagger()
         let res = tsp.attributedString(from: "click <i>here</i> please") { (tagName) -> [NSAttributedString.Key : Any] in
             callsNum += 1
             switch tagName {
@@ -43,7 +43,7 @@ final class StringTagProcessorTests: XCTestCase {
         
         /// Simple case
         /// This is also OK. Still the entire string will be enclosed in an implicit tag called "root".
-        let tsp = StringTagProcessor()
+        let tsp = StringUntagger()
         let res = tsp.attributedString(from: "<mytag>content</mytag>") { (tagName) -> [NSAttributedString.Key : Any] in
             callsNum += 1
             switch tagName {
@@ -63,7 +63,7 @@ final class StringTagProcessorTests: XCTestCase {
       
         /// Common case
         /// String has three consecutive tags plus the implicit "root" tag, the block will be called various times.
-        let tsp = StringTagProcessor()
+        let tsp = StringUntagger()
         let res = tsp.attributedString(from: "<morning>huevo-frito </morning><lunch>fired-egg</lunch><dinner> a めやままき with rice</dinner>") { (tagName) -> [NSAttributedString.Key : Any] in
             callsNum += 1
             switch tagName {
@@ -85,7 +85,7 @@ final class StringTagProcessorTests: XCTestCase {
     func testOneInsideOfOther() {
         var callsNum = 0 // To test attributter block is called the right number of times
         
-        let tsp = StringTagProcessor()
+        let tsp = StringUntagger()
         let res = tsp.attributedString(from: "<outter>start<inner>this is the middle</inner>end</outter>") { (tagName) -> [NSAttributedString.Key : Any] in
             callsNum += 1
             switch tagName {
@@ -105,7 +105,7 @@ final class StringTagProcessorTests: XCTestCase {
     
     func testMalformed() {
         /// Mal formed strings cannot be parsed and they are returned as unparsed and no attributed NSAttributedString. See logs.
-        let tsp = StringTagProcessor()
+        let tsp = StringUntagger()
         let res = tsp.attributedString(from: "<inner>malformed</outter>") { (tagName) -> [NSAttributedString.Key : Any] in
             switch tagName {
             case "outter": return [ .foregroundColor: Color.red, .font: font17]
@@ -123,7 +123,7 @@ final class StringTagProcessorTests: XCTestCase {
         
         /// If default "root" is not good for your needs, you can set the root name in the initializer
         /// Example, you have `start<root>the middle</root>end` and you want to `the middle` part to have different attributes then you should set root element other name.
-        let tsp = StringTagProcessor(rootName: "MyCustomRootName")
+        let tsp = StringUntagger(rootName: "MyCustomRootName")
         let res = tsp.attributedString(from: "start<root>this is the middle</root>end") { (tagName) -> [NSAttributedString.Key : Any] in
             callsNum += 1
             switch tagName {
@@ -146,7 +146,7 @@ final class StringTagProcessorTests: XCTestCase {
         var callsNum = 0 // To test attributter block is called the right number of times
         
         /// If you want to erase attributes for a certain attributed for a certain tag you can pass NSNull()
-        let tsp = StringTagProcessor()
+        let tsp = StringUntagger()
         let res = tsp.attributedString(from: "<outter>start<inner>this <really-inner>is</really-inner> the middle</inner>end</outter>") { (tagName) -> [NSAttributedString.Key : Any] in
             callsNum += 1
             switch tagName {

@@ -1,6 +1,6 @@
 import Foundation
 
-class StringTagProcessor: NSObject {
+class StringUntagger: NSObject {
     
     class Element: CustomStringConvertible  {
         var name: String
@@ -32,7 +32,7 @@ class StringTagProcessor: NSObject {
     func attributedString(from string: String, attributer: @escaping ((String) -> [NSAttributedString.Key: Any])) -> NSAttributedString {
         let wrapped = "<\(rootName)>\(string)</\(rootName)>"
         guard let data = wrapped.data(using: .utf8) else {
-            print("StringTagProcessor abnormal end. Data could not be created.")
+            print("StringUntagger abnormal end. Data could not be created.")
             return NSMutableAttributedString(string: string)
         }
         
@@ -46,28 +46,28 @@ class StringTagProcessor: NSObject {
             self.attributter = nil
         }
         if let parseError = parser.parserError {
-            print("StringTagProcessor abnormal end. parseError: \(parseError).")
+            print("StringUntagger abnormal end. parseError: \(parseError).")
             return NSMutableAttributedString(string: string)
         }
         guard let result = result else {
-            print("StringTagProcessor abnormal end. result: <NULL>.")
+            print("StringUntagger abnormal end. result: <NULL>.")
             return NSMutableAttributedString(string: string)
         }
-        print("StringTagProcessor succeed.")
+        print("StringUntagger succeed.")
         return result
     }
 }
 
-extension StringTagProcessor: XMLParserDelegate {
+extension StringUntagger: XMLParserDelegate {
     
     func parserDidStartDocument(_ parser: XMLParser) {
-        print("StringTagProcessor parserDidStartDocument \(parser)")
+        print("StringUntagger parserDidStartDocument \(parser)")
         result = NSMutableAttributedString()
         //stack.append(root)
     }
     
     func parserDidEndDocument(_ parser: XMLParser) {
-        print("StringTagProcessor parserDidEndDocument \(parser)")
+        print("StringUntagger parserDidEndDocument \(parser)")
         //stack.removeLast()
     }
     
@@ -90,7 +90,7 @@ extension StringTagProcessor: XMLParserDelegate {
 
     
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
-        print("StringTagProcessor didStartElement \(elementName) (calling attributer)")
+        print("StringUntagger didStartElement \(elementName) (calling attributer)")
         let newElement = Element(name: elementName)
         let parent = stack.last
         newElement.parent = parent
@@ -100,7 +100,7 @@ extension StringTagProcessor: XMLParserDelegate {
     }
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-        print("StringTagProcessor didEndElement \(elementName)")
+        print("StringUntagger didEndElement \(elementName)")
         stack.removeLast()
     }
 
@@ -112,9 +112,9 @@ extension StringTagProcessor: XMLParserDelegate {
 
     
     func parser(_ parser: XMLParser, foundCharacters string: String) {
-        print("StringTagProcessor foundCharacters \(string)")
+        print("StringUntagger foundCharacters \(string)")
         guard let element = stack.last else {
-            print("StringTagProcessor early exit")
+            print("StringUntagger early exit")
             return
         }
         // Merge current element attributes with parents' attributes (preserving child attributtes)
@@ -152,7 +152,7 @@ extension StringTagProcessor: XMLParserDelegate {
 
     
     func parser(_ parser: XMLParser, foundComment comment: String) {
-        print("StringTagProcessor foundComment \(comment)")
+        print("StringUntagger foundComment \(comment)")
     }
 
     
@@ -163,12 +163,12 @@ extension StringTagProcessor: XMLParserDelegate {
 
     
     func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
-        print("StringTagProcessor parseErrorOccurred \(parseError)")
+        print("StringUntagger parseErrorOccurred \(parseError)")
     }
 
     
     func parser(_ parser: XMLParser, validationErrorOccurred validationError: Error) {
-        print("StringTagProcessor validationErrorOccurred \(validationError)")
+        print("StringUntagger validationErrorOccurred \(validationError)")
     }
 }
 
