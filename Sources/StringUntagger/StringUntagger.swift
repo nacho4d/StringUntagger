@@ -89,13 +89,13 @@ public class StringUntagger: NSObject {
 
 extension StringUntagger: XMLParserDelegate {
     
-    func parserDidStartDocument(_ parser: XMLParser) {
+    public func parserDidStartDocument(_ parser: XMLParser) {
         print("StringUntagger parserDidStartDocument \(parser)")
         result = NSMutableAttributedString()
         //stack.append(root)
     }
     
-    func parserDidEndDocument(_ parser: XMLParser) {
+    public func parserDidEndDocument(_ parser: XMLParser) {
         print("StringUntagger parserDidEndDocument \(parser)")
         //stack.removeLast()
     }
@@ -118,7 +118,7 @@ extension StringUntagger: XMLParserDelegate {
     // func parser(_ parser: XMLParser, foundExternalEntityDeclarationWithName name: String, publicID: String?, systemID: String?)
 
     
-    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
+    public func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
         print("StringUntagger didStartElement \(elementName) (calling attributer)")
         let newElement = Element(name: elementName)
         let parent = stack.last
@@ -128,7 +128,7 @@ extension StringUntagger: XMLParserDelegate {
         newElement.attributes = findAttributes(newElement: newElement)
     }
     
-    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+    public func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         print("StringUntagger didEndElement \(elementName)")
         stack.removeLast()
     }
@@ -140,7 +140,7 @@ extension StringUntagger: XMLParserDelegate {
     // func parser(_ parser: XMLParser, didEndMappingPrefix prefix: String)
 
     
-    func parser(_ parser: XMLParser, foundCharacters string: String) {
+    public func parser(_ parser: XMLParser, foundCharacters string: String) {
         print("StringUntagger foundCharacters \(string)")
         guard let element = stack.last else {
             print("StringUntagger early exit")
@@ -180,7 +180,7 @@ extension StringUntagger: XMLParserDelegate {
     // func parser(_ parser: XMLParser, foundProcessingInstructionWithTarget target: String, data: String?)
 
     
-    func parser(_ parser: XMLParser, foundComment comment: String) {
+    public func parser(_ parser: XMLParser, foundComment comment: String) {
         print("StringUntagger foundComment \(comment)")
     }
 
@@ -191,12 +191,12 @@ extension StringUntagger: XMLParserDelegate {
     // func parser(_ parser: XMLParser, resolveExternalEntityName name: String, systemID: String?) -> Data?
 
     
-    func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
+    public func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
         print("StringUntagger parseErrorOccurred \(parseError)")
     }
 
     
-    func parser(_ parser: XMLParser, validationErrorOccurred validationError: Error) {
+    public func parser(_ parser: XMLParser, validationErrorOccurred validationError: Error) {
         print("StringUntagger validationErrorOccurred \(validationError)")
     }
 }
