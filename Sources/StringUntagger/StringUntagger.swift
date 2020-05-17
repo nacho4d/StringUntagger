@@ -1,5 +1,11 @@
 import Foundation
 
+extension String {
+    func attributedString(attributter: [String: [NSAttributedString.Key: Any]]) -> NSAttributedString {
+        return StringUntagger().attributedString(from: self, attributer: attributter)
+    }
+}
+
 class StringUntagger: NSObject {
     
     class Element: CustomStringConvertible  {
@@ -24,27 +30,41 @@ class StringUntagger: NSObject {
     private var stack = [Element]()
     private var rootName: String
     
-    private var attributter: ((String) -> [NSAttributedString.Key: Any])!
+    /// Either is required
+    private var attributterDictionary: [String: [NSAttributedString.Key: Any]]?
+    private var attributterBlock: ((String, [String]) -> [NSAttributedString.Key: Any])?
     
     private var result: NSMutableAttributedString?
     
-    /// `attributer` block is executed various times depending on how many tags there is in the string. It is executed synchronously.
-    func attributedString(from string: String, attributer: @escaping ((String) -> [NSAttributedString.Key: Any])) -> NSAttributedString {
+    func findAttributes(newElement: Element) -> [NSAttributedString.Key: Any] {
+        if let attributter = attributterDictionary {
+            // Get attributes from dictionary
+            return attributter[newElement.name] ?? [:]
+        } else if let attributter = attributterBlock {
+            // Get attributed from block. Also provide array of previous items
+            var parent: Element? = newElement.parent
+            var parents: [String] = [newElement.name]
+            while parent != nil {
+                parents.insert(parent!.name, at: 0)
+                parent = parent!.parent
+            }
+            return attributter(newElement.name, parents)
+        } else {
+            return [:]
+        }
+    }
+    
+    private func attributedString(from string: String, attributerDictionary: [String: [NSAttributedString.Key: Any]]?, attributerBlock: ((String, [String]) -> [NSAttributedString.Key: Any])?) -> NSAttributedString {
         let wrapped = "<\(rootName)>\(string)</\(rootName)>"
         guard let data = wrapped.data(using: .utf8) else {
             print("StringUntagger abnormal end. Data could not be created.")
             return NSMutableAttributedString(string: string)
         }
-        
-        self.attributter = attributer
+        self.attributterDictionary = attributerDictionary
+        self.attributterBlock = attributerBlock
         let parser = XMLParser(data: data)
         parser.delegate = self
         parser.parse()
-        
-        
-        defer {
-            self.attributter = nil
-        }
         if let parseError = parser.parserError {
             print("StringUntagger abnormal end. parseError: \(parseError).")
             return NSMutableAttributedString(string: string)
@@ -55,6 +75,15 @@ class StringUntagger: NSObject {
         }
         print("StringUntagger succeed.")
         return result
+    }
+        
+    /// `attributer` block is executed various times depending on how many tags there is in the string. It is executed synchronously.
+    func attributedString(from string: String, attributer: [String: [NSAttributedString.Key: Any]]) -> NSAttributedString {
+        return attributedString(from: string, attributerDictionary: attributer, attributerBlock: nil)
+    }
+        
+    func attributedString(from string: String, attributer: ((String, [String]) -> [NSAttributedString.Key: Any])?) -> NSAttributedString {
+        return attributedString(from: string, attributerDictionary: nil, attributerBlock: attributer)
     }
 }
 
@@ -96,7 +125,7 @@ extension StringUntagger: XMLParserDelegate {
         newElement.parent = parent
         parent?.children.append(newElement)
         stack.append(newElement)
-        newElement.attributes = attributter(newElement.name)
+        newElement.attributes = findAttributes(newElement: newElement)
     }
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {

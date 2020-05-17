@@ -32,6 +32,8 @@ func XCTAssertAttributesAtRange(_ target: NSAttributedString, attrs expectedAttr
             XCTAssertEqual(value as? CGFloat, v, "\(message()) Invalid value of key: \(expectedKey) at range:\(range)", file: file, line: line)
         } else if let v = expectedValue as? Font {
             XCTAssertEqual(value as? Font, v, "\(message()) Invalid value of key: \(expectedKey) at range:\(range)", file: file, line: line)
+        } else if let v = expectedValue as? NSUnderlineStyle {
+            XCTAssertEqual(value as? NSUnderlineStyle, v, "\(message()) Invalid value of key: \(expectedKey) at range:\(range)", file: file, line: line)
         } else {
             XCTFail("Please define a new type to compare here :) ")
         }
