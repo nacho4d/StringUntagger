@@ -1,6 +1,7 @@
 # StringUntagger
 
-![Swift](https://github.com/nacho4d/StringUntagger/workflows/Swift/badge.svg)
+<a href="https://github.com/nacho4d/StringUntagger/actions"><img src="https://github.com/nacho4d/StringUntagger/workflows/Swift/badge.svg" alt="Swift"/></a>
+
 
 A simple class to convert tagged strings to attributed strings. This is specially useful when strings are attributed and localized.
 
